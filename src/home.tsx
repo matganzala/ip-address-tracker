@@ -3,12 +3,13 @@ import { IPAddress } from "./ipModel";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { LatLngExpression } from "leaflet";
+import  BgHeader  from "./assets/images/pattern-bg-desktop.png"
 
 export function Home() {
   const [ip, setIp] = useState("");
   const [returnIp, setReturnIp] = useState<IPAddress | undefined>();
   const [coordinates, setCoordinates] = useState<LatLngExpression | undefined>([51.505, -0.09]);
-  const mapRef: any = useRef<MapContainer>();
+  const mapRef: any = useRef();
 
   function searchIp(value: string) {
     fetch(
@@ -33,23 +34,26 @@ export function Home() {
   }, [coordinates]);
 
   return (
-    <div >
-      <div className="flex flex-col justify-center items-center">
-        <div className="flex flex-wrap space-x-2 mt-2">
-          <input
-            type="text"
-            name=""
-            id=""
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setIp(e.target.value)}
-            placeholder="Pesquisa"
-            className="border-solid border-2 border-indigo-600 p-5"
-          />
-          <div className="flex flex-row items-center space-x-2">
-            <button onClick={() => searchIp(ip)}>Acessar</button>
-            <p className="underline text-[10px]">Don't know your ip?</p>
+    <div className="h-[100vh]">
+      <div className="flex flex-col relative">
+        <div>
+          <img src={BgHeader} alt="" className="inset-0 w-full h-[full] object-cover"/>
+          <div className="flex flex-wrap space-x-2 mt-2" style={{ zIndex: 1 }}>
+            <input
+              type="text"
+              name=""
+              id=""
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setIp(e.target.value)}
+              placeholder="Pesquisa"
+              className="border-solid border-2 border-indigo-600 p-5"
+            />
+            <div className="flex flex-row items-center space-x-2">
+              <button onClick={() => searchIp(ip)}>Acessar</button>
+              <p className="underline text-[10px]">Don't know your ip?</p>
+            </div>
           </div>
         </div>
-        <div className="flex flex-row space-x-2">
+        <div className="flex flex-row space-x-2" style={{ zIndex: 1 }}>
           <input
             type="text"
             placeholder="IP"
@@ -88,7 +92,9 @@ export function Home() {
           />
           {coordinates && (
             <Marker position={coordinates} key={coordinates.toString()}>
-              <Popup>Hello, I'm a marker!</Popup>
+              <Popup>{returnIp?.location?.city && returnIp?.location?.country
+                ? `${returnIp.location.city}, ${returnIp.location.country}`
+                : ""}</Popup>
             </Marker>
           )}
         </MapContainer>
